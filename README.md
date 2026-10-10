@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Voucher Distribution Management System
 
 A Django 5-based voucher management platform for tracking voucher distributions, payments, balances, and reporting.
@@ -20,3 +21,7 @@ A Django 5-based voucher management platform for tracking voucher distributions,
 ## Default Admin
 - Username: `admin`
 - Password: `admin123`
+=======
+# MMyVouchersss
+wifiVmonitoring
+>>>>>>> 2dcb62c57ac626a1c183caa62fd45930fbab9fd8
