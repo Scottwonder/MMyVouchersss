@@ -1,0 +1,8 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <h4>Delete Payment</h4>
+    <p>Are you sure you want to delete the payment of UGX {{ object.amount }} for {{ object.selling_point.name }}?</p>
+    <form method="post">{% csrf_token %}<button class="btn btn-danger">Delete</button> <a href="{% url 'payments' %}" class="btn btn-secondary">Cancel</a></form>
+</div>
+{% endblock %}

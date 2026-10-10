@@ -1,0 +1,10 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-3">
+    <h4>Audit Logs</h4>
+    <table class="table table-striped">
+        <thead><tr><th>Date</th><th>Action</th><th>Model</th><th>User</th></tr></thead>
+        <tbody>{% for log in logs %}<tr><td>{{ log.created_at }}</td><td>{{ log.action }}</td><td>{{ log.model_name }}</td><td>{{ log.created_by.username|default:'System' }}</td></tr>{% empty %}<tr><td colspan="4">No logs.</td></tr>{% endfor %}</tbody>
+    </table>
+</div>
+{% endblock %}

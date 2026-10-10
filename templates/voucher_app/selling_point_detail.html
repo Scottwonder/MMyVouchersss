@@ -1,0 +1,11 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4"><div class="card p-4"><h4>{{ selling_point.name }}</h4><p><strong>Location:</strong> {{ selling_point.location }}</p><p><strong>Contact Person:</strong> {{ selling_point.contact_person }}</p><p><strong>Phone:</strong> {{ selling_point.phone_number }}</p><p><strong>Outstanding:</strong> UGX {{ selling_point.outstanding_balance }}</p></div></div>
+    <div class="col-lg-8"><div class="card p-4"><h5>Recent Transactions</h5><ul>{% for tx in recent_transactions %}<li>{{ tx }}</li>{% endfor %}</ul></div></div>
+</div>
+<div class="row g-4 mt-2">
+    <div class="col-lg-6"><div class="card p-4"><h5>Distribution History</h5><ul>{% for dist in distributions %}<li>{{ dist.distribution_number }} - UGX {{ dist.total_value }}</li>{% empty %}<li>No distributions.</li>{% endfor %}</ul></div></div>
+    <div class="col-lg-6"><div class="card p-4"><h5>Payment History</h5><ul>{% for payment in payments %}<li>{{ payment.payment_date }} - UGX {{ payment.amount }} ({{ payment.payment_method }})</li>{% empty %}<li>No payments.</li>{% endfor %}</ul></div></div>
+</div>
+{% endblock %}

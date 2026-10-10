@@ -1,0 +1,8 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <h4>Delete Distribution</h4>
+    <p>Are you sure you want to delete distribution {{ object.distribution_number }}? Its voucher items will also be deleted.</p>
+    <form method="post">{% csrf_token %}<button class="btn btn-danger">Delete</button> <a href="{% url 'distributions' %}" class="btn btn-secondary">Cancel</a></form>
+</div>
+{% endblock %}

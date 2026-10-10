@@ -1,0 +1,11 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <h4>{{ title }}</h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}

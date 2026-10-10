@@ -1,0 +1,157 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-compact p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <small class="text-uppercase text-muted">{{ selling_point_subtitle|default:'Selling Points' }}</small>
+                    <h3 class="mb-0">{{ selling_point_name|default:total_selling_points }}</h3>
+                </div>
+                <div class="bg-primary text-white rounded-3 p-3 shadow-sm"><i class="fa-solid fa-store fa-xl"></i></div>
+            </div>
+            <p class="text-muted mb-0 small">{% if selling_point_name %}{{ selling_point_name }} overview for your assigned voucher point.{% else %}Active selling points across your voucher network.{% endif %}</p>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-compact p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <small class="text-uppercase text-muted">Total Distributed</small>
+                    <h3 class="mb-0">UGX {{ total_distributed }}</h3>
+                </div>
+                <div class="bg-success text-white rounded-3 p-3 shadow-sm"><i class="fa-solid fa-truck-fast fa-xl"></i></div>
+            </div>
+            <p class="text-muted mb-0 small">Total voucher value delivered to partners.</p>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-compact p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <small class="text-uppercase text-muted">Total Received</small>
+                    <h3 class="mb-0">UGX {{ total_received }}</h3>
+                </div>
+                <div class="bg-info text-white rounded-3 p-3 shadow-sm"><i class="fa-solid fa-money-bill-wave fa-xl"></i></div>
+            </div>
+            <p class="text-muted mb-0 small">Cash and payments collected from selling points.</p>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-compact p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <small class="text-uppercase text-muted">Outstanding</small>
+                    <h3 class="mb-0">UGX {{ outstanding }}</h3>
+                </div>
+                <div class="bg-warning text-dark rounded-3 p-3 shadow-sm"><i class="fa-solid fa-exclamation-triangle fa-xl"></i></div>
+            </div>
+            <p class="text-muted mb-0 small">Pending receivables requiring follow-up.</p>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-compact p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <small class="text-uppercase text-muted">Today's Collections</small>
+                    <h3 class="mb-0">UGX {{ todays_collections }}</h3>
+                </div>
+                <div class="bg-secondary text-white rounded-3 p-3 shadow-sm"><i class="fa-solid fa-calendar-day fa-xl"></i></div>
+            </div>
+            <p class="text-muted mb-0 small">Payments posted today from active points.</p>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-compact p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <small class="text-uppercase text-muted">Today's Distribution</small>
+                    <h3 class="mb-0">UGX {{ todays_distribution }}</h3>
+                </div>
+                <div class="bg-dark text-white rounded-3 p-3 shadow-sm"><i class="fa-solid fa-chart-line fa-xl"></i></div>
+            </div>
+            <p class="text-muted mb-0 small">Voucher value distributed today.</p>
+        </div>
+    </div>
+</div>
+{% if user.is_staff or user.is_superuser %}
+<div class="mb-4">
+    <a href="{% url 'user-add' %}" class="btn btn-primary">Create User Account</a>
+</div>
+{% endif %}
+<div class="card p-4 bg-white mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div><h5 class="mb-1">Voucher Type Balances</h5><small class="text-muted">Outstanding balance by voucher type</small></div>
+        <span class="badge bg-light text-dark">{{ voucher_type_balances|length }}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Voucher Type</th>
+                    <th>Distributed</th>
+                    <th>Outstanding</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for type in voucher_type_balances %}
+                <tr>
+                    <td>{{ type.name }}</td>
+                    <td>UGX {{ type.distributed }}</td>
+                    <td>UGX {{ type.outstanding }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="text-muted">No voucher type balances available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-xl-6">
+        <div class="card p-4 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div><h5 class="mb-1">Recent Activities</h5><small class="text-muted">Latest audit actions and updates</small></div>
+                <span class="badge bg-light text-dark">{{ recent_activities|length }}</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0">
+                    <tbody>
+                        {% for log in recent_activities %}
+                        <tr>
+                            <td><strong>{{ log.action }}</strong><br><small class="text-muted">{{ log.created_at|date:'M d, Y H:i' }}</small></td>
+                            <td>{{ log.created_by.username|default:'System' }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-muted">No recent activities available.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card p-4 bg-white">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div><h5 class="mb-1">Recent Payments</h5><small class="text-muted">Latest payment records received</small></div>
+                <span class="badge bg-light text-dark">{{ recent_payments|length }}</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-borderless align-middle mb-0">
+                    <tbody>
+                        {% for payment in recent_payments %}
+                        <tr>
+                            <td><strong>{{ payment.selling_point.name }}</strong><br><small class="text-muted">{{ payment.payment_date }}</small></td>
+                            <td>UGX {{ payment.amount }}</td>
+                            <td class="text-muted">{{ payment.payment_method|title }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="3" class="text-muted">No recent payments available.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

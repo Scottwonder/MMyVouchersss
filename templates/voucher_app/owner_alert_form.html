@@ -1,0 +1,50 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <h4 class="mb-3">Submit Owner Alert</h4>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label class="form-label">Selling Point</label>
+                {{ form.selling_point }}
+                {% if form.selling_point.errors %}
+                    <div class="text-danger small">{{ form.selling_point.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label">Alert Type</label>
+                {{ form.alert_type }}
+                {% if form.alert_type.errors %}
+                    <div class="text-danger small">{{ form.alert_type.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label">Voucher Type</label>
+                {{ form.voucher_type }}
+                {% if form.voucher_type.errors %}
+                    <div class="text-danger small">{{ form.voucher_type.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label">Quantity</label>
+                {{ form.quantity }}
+                {% if form.quantity.errors %}
+                    <div class="text-danger small">{{ form.quantity.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-12">
+                <label class="form-label">Message</label>
+                {{ form.message }}
+                {% if form.message.errors %}
+                    <div class="text-danger small">{{ form.message.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Send Alert</button>
+            <a href="{% url 'owner-alerts' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

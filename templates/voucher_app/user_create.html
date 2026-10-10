@@ -1,0 +1,69 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4 shadow-sm">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4 gap-3">
+        <div>
+            <h4 class="mb-1">Create User Account</h4>
+            <p class="text-muted mb-0">Add a new user and assign selling points with secure password setup.</p>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to dashboard</a>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">First Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}<div class="text-danger small">{{ form.first_name.errors }}</div>{% endif %}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Last Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors }}</div>{% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="bg-light rounded-3 p-4 h-100">
+                    <h5 class="mb-3">Password Setup</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}<div class="text-danger small">{{ form.password1.errors }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors }}</div>{% endif %}
+                    </div>
+                    <p class="text-muted small mb-0">Choose a strong password for the new user account.</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Assigned Selling Points</label>
+                {{ form.selling_points }}
+                {% if form.selling_points.errors %}<div class="text-danger small">{{ form.selling_points.errors }}</div>{% endif %}
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <div class="text-muted small">New account credentials can be updated anytime from user edit.</div>
+            <div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

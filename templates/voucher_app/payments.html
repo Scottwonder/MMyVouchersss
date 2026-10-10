@@ -1,0 +1,54 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+    <div><h4>Payments</h4></div>
+    <div class="d-flex gap-2 flex-wrap">
+        <form class="d-flex" method="get">
+            <input type="search" name="q" value="{{ query }}" class="form-control form-control-sm" placeholder="Search payments">
+            <button class="btn btn-sm btn-outline-secondary ms-2">Search</button>
+        </form>
+        {% if request.user.is_staff or request.user.is_superuser %}
+            <a href="{% url 'payment-add' %}" class="btn btn-primary">New Payment</a>
+        {% endif %}
+    </div>
+</div>
+<div class="card p-3">
+    <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+        <table class="table table-striped mb-0">
+            <thead><tr><th>Selling Point</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody>{% for payment in payments %}<tr><td>{{ payment.selling_point.name }}</td><td>UGX {{ payment.amount }}</td><td>{{ payment.payment_method }}</td><td>{{ payment.payment_date }}</td><td>{{ payment.get_status_display }}</td><td>
+            {% if request.user.is_staff or request.user.is_superuser %}
+                <div class="d-flex gap-2 flex-wrap">
+                {% if payment.status == 'pending' %}
+                    <form method="post" action="{% url 'payment-admin-confirm' payment.id %}">{% csrf_token %}<button class="btn btn-sm btn-success">Confirm</button></form>
+                    <a href="{% url 'payment-edit' payment.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                {% elif payment.status == 'owner_disputed' %}
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'payment-admin-review' payment.id %}">{% csrf_token %}<input type="hidden" name="action" value="accept"><button class="btn btn-sm btn-success">Accept Dispute</button></form>
+                        <form method="post" action="{% url 'payment-admin-review' payment.id %}">{% csrf_token %}<input type="hidden" name="action" value="reject"><button class="btn btn-sm btn-danger">Reject Dispute</button></form>
+                    </div>
+                {% endif %}
+                <a href="{% url 'payment-delete' payment.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </div>
+            {% else %}
+                {% if payment.status == 'admin_confirmed' %}
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'payment-owner-confirm' payment.id %}">{% csrf_token %}<button class="btn btn-sm btn-success">Confirm Receipt</button></form>
+                        <a href="{% url 'payment-dispute' payment.id %}" class="btn btn-sm btn-warning">Dispute Amount</a>
+                    </div>
+                {% elif payment.status == 'owner_disputed' %}
+                    <span class="badge bg-warning text-dark">Awaiting admin review</span>
+                {% else %}
+                    &mdash;
+                {% endif %}
+            {% endif %}
+        </td></tr>
+        {% if payment.status == 'owner_disputed' and not request.user.is_staff and not request.user.is_superuser %}
+        <tr><td colspan="6"><small class="text-muted">Disputed amount requested: UGX {{ payment.disputed_amount }}. Note: {{ payment.dispute_note }}</small></td></tr>
+        {% endif %}
+        {% if payment.status == 'owner_disputed' and request.user.is_staff or payment.status == 'owner_disputed' and request.user.is_superuser %}
+        <tr><td colspan="6"><small class="text-muted">Disputed amount: UGX {{ payment.disputed_amount }} by {{ payment.updated_by.username|default:'owner' }}. Note: {{ payment.dispute_note }}</small></td></tr>
+        {% endif %}
+        {% empty %}<tr><td colspan="6">No payments.</td></tr>{% endfor %}</tbody></table>
+    </div>
+</div>
+{% endblock %}

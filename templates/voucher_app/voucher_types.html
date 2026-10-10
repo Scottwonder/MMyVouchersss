@@ -1,0 +1,8 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Voucher Types</h4>
+    <a href="{% url 'voucher-type-add' %}" class="btn btn-primary">Add Voucher Type</a>
+</div>
+<div class="card p-3"><table class="table table-striped"><thead><tr><th>Name</th><th>Price</th><th>Actions</th></tr></thead><tbody>{% for vt in voucher_types %}<tr><td>{{ vt.name }}</td><td>UGX {{ vt.price }}</td><td><a href="{% url 'voucher-type-edit' vt.pk %}" class="btn btn-sm btn-outline-primary">Edit</a> <a href="{% url 'voucher-type-delete' vt.pk %}" class="btn btn-sm btn-outline-danger">Delete</a></td></tr>{% empty %}<tr><td colspan="3">No voucher types.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

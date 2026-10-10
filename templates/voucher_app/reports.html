@@ -1,0 +1,75 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+        <div>
+            <h4>Reports</h4>
+            <p class="mb-0">Generate and export reports for distributions and payments.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'export-report' 'distribution' %}?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-outline-primary">Export Distribution CSV</a>
+            <a href="{% url 'export-report' 'payment' %}?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-outline-success">Export Payment CSV</a>
+            <a href="{% url 'export-report' 'voucher-type' %}?start_date={{ start_date }}&end_date={{ end_date }}" class="btn btn-outline-secondary">Export Voucher Type CSV</a>
+        </div>
+    </div>
+    <form method="get" class="row g-3 align-items-end mt-4">
+        <div class="col-sm-4">
+            <label class="form-label">Start date</label>
+            <input type="date" name="start_date" value="{{ start_date }}" class="form-control">
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label">End date</label>
+            <input type="date" name="end_date" value="{{ end_date }}" class="form-control">
+        </div>
+        <div class="col-sm-4">
+            <button type="submit" class="btn btn-primary">Apply range</button>
+        </div>
+    </form>
+    {% if selected_range %}
+        <div class="alert alert-info mt-4 mb-0">Exporting records from <strong>{{ selected_range }}</strong>.</div>
+    {% endif %}
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card p-4">
+                <h5 class="mb-3">Voucher Type Summary</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Voucher Type</th>
+                                <th>Price</th>
+                                <th>Distributed Qty</th>
+                                <th>Distributed Value</th>
+                                <th>Sold Qty*</th>
+                                <th>Available Qty*</th>
+                                <th>Sold Value</th>
+                                <th>Available Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in voucher_type_report %}
+                                <tr>
+                                    <td>{{ row.name }}</td>
+                                    <td>UGX {{ row.price }}</td>
+                                    <td>{{ row.distributed_quantity }}</td>
+                                    <td>UGX {{ row.distributed_value }}</td>
+                                    <td>{{ row.sold_quantity }}</td>
+                                    <td>{{ row.available_quantity }}</td>
+                                    <td>UGX {{ row.sold_value }}</td>
+                                    <td>UGX {{ row.available_value }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-muted">No voucher type distribution data available for the selected range.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted mt-3 mb-0"><small>*Sold and available values are estimated from total payments collected against distributed value.</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

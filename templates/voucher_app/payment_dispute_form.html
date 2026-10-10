@@ -1,0 +1,37 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8">
+        <div class="card p-4 bg-white">
+            <h4 class="mb-3">Dispute Payment</h4>
+            <p class="text-muted">If the amount posted is incorrect, enter the correct amount and a note for the admin to review.</p>
+            <div class="mb-3">
+                <strong>Original amount:</strong> UGX {{ payment.amount }}<br>
+                <strong>Selling point:</strong> {{ payment.selling_point.name }}<br>
+                <strong>Payment date:</strong> {{ payment.payment_date }}
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.disputed_amount.label_tag }}
+                    {{ form.disputed_amount }}
+                    {% if form.disputed_amount.errors %}
+                        <div class="text-danger small">{{ form.disputed_amount.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    {{ form.dispute_note.label_tag }}
+                    {{ form.dispute_note }}
+                    {% if form.dispute_note.errors %}
+                        <div class="text-danger small">{{ form.dispute_note.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-warning">Submit Dispute</button>
+                    <a href="{% url 'payments' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

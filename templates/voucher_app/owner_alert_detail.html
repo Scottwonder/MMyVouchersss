@@ -1,0 +1,57 @@
+{% extends 'voucher_app/base.html' %}
+{% block content %}
+<div class="card p-4">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h4>Alert Details</h4>
+            <p class="text-muted mb-0">Track alert status and history for this request.</p>
+        </div>
+        <a href="{% url 'owner-alerts' %}" class="btn btn-outline-secondary">Back to Alerts</a>
+    </div>
+    <div class="mb-4">
+        <h5>{{ alert.selling_point.name }}</h5>
+        <p class="mb-1"><strong>Type:</strong> {{ alert.get_alert_type_display }}</p>
+        <p class="mb-1"><strong>Status:</strong> <span class="badge bg-{% if alert.status == 'pending' %}warning{% elif alert.status == 'reviewed' %}info{% else %}success{% endif %} text-dark">{{ alert.get_status_display }}</span></p>
+        <p class="mb-1"><strong>Submitted:</strong> {{ alert.created_at|date:'Y-m-d H:i' }}</p>
+        {% if alert.voucher_type %}<p class="mb-1"><strong>Voucher type:</strong> {{ alert.voucher_type.name }}</p>{% endif %}
+        {% if alert.quantity %}<p class="mb-1"><strong>Quantity:</strong> {{ alert.quantity }}</p>{% endif %}
+        <p class="mb-1"><strong>Message:</strong><br>{{ alert.message|linebreaks }}</p>
+    </div>
+    <div class="mb-4">
+        <h5>History</h5>
+        {% if alert.history.exists %}
+            <ul class="list-group">
+                {% for item in alert.history.all %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>{{ item.get_new_status_display }}</strong> &middot; {{ item.note }}
+                            </div>
+                            <small class="text-muted">{{ item.created_at|date:'Y-m-d H:i' }}</small>
+                        </div>
+                        <div class="text-muted">By: {{ item.changed_by.username|default:'System' }}</div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted mb-0">No status changes have been recorded yet.</p>
+        {% endif %}
+    </div>
+    {% if user.is_staff or user.is_superuser %}
+    <div class="card p-3">
+        <h5>Update Status</h5>
+        <form method="post" action="{% url 'owner-alert-status-change' alert.id %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <select name="status" class="form-select">
+                    {% for value, label in alert.STATUS_CHOICES %}
+                        <option value="{{ value }}" {% if alert.status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-primary" type="submit">Change Status</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
